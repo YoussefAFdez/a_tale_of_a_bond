@@ -1,3 +1,12 @@
 How to take \n character from fgets input:
 https://stackoverflow.com/questions/2693776/removing-trailing-newline-character-from-fgets-input
 
+How to check if a directory exists:
+https://stackoverflow.com/questions/12510874/how-can-i-check-if-a-directory-exists
+
+Declare String constants:
+https://stackoverflow.com/questions/1431576/how-do-you-declare-string-constants-in-c/11974752
+
+Delete file:
+https://www.tutorialspoint.com/c-program-to-delete-a-file
+

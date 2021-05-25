@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
-#include "secondMain.h"
+#include <dirent.h>
+#include <errno.h>
+#include "game.h"
+#define OPCANCEL "Operation Cancelled. Press any key to return to main menu..."
 
 int printMainMenu();
 int printNewGameMenu();
@@ -15,15 +18,9 @@ int readAllFiles(int);
 void writeFileInfo(FILE*, int);
 void checkSelectedFile(int, int);
 int confirmNewGame();
+int deleteConfirm();
 void createNewGameFile(int);
-
-typedef struct {
-    char playerName[11];
-    int playerLevel;
-    int currentZone;
-    int currentEXP;
-    int currentHP;
-} playerInfo;
+void loadGame(int);
 
 int main() {
     int exitRequest = 0;
@@ -50,6 +47,9 @@ int main() {
             case 5:
                 printCredits();
                 break;
+            case 6:
+                tutorial();
+                break;
             case 0:
                 exit(0);
             default:
@@ -66,6 +66,7 @@ int printMainMenu() {
     puts("3.- Manage Game Files");
     puts("4.- Lore");
     puts("5.- Credits");
+    puts("6.- Tutorial");
     puts("0.- Exit\n");
     printf("Choose an option:");
 
@@ -82,7 +83,7 @@ int printMainMenu() {
         }
     } else return 'a';
 
-    //printf("%c", option);
+    return 0;
 }
 
 int printNewGameMenu() {
@@ -160,6 +161,15 @@ int readAllFiles(int mode) {
      * 7 -> All files found
      */
 
+    /*
+     * First we need to check if the savestates folder exists
+     * If it doesn't it's because it's the first time launching the program, so we should create it
+     */
+    DIR* dir = opendir("savestates");
+    if (dir) closedir(dir);
+    else if (ENOENT == errno){ system("mkdir savestates"); closedir(dir); }
+
+
     //We try to read from all 3 files
     FILE *file1 = fopen("savestates\\saveslot1.txt", "r");
     FILE *file2 = fopen("savestates\\saveslot2.txt", "r");
@@ -225,6 +235,7 @@ void writeFileInfo(FILE* file, int fileNum) {
 */
 void checkSelectedFile(int filesRead, int function) {
     int option = getch() - '0';
+    int menuStop = 0; //Will determine if there needs to be a getch() to stop the player from going to the menu
 
     //If the user tries to put an option of a file that can't be reached:
     if (option < 0 || option > 3) puts("\nYou haven't selected a valid option");
@@ -237,13 +248,17 @@ void checkSelectedFile(int filesRead, int function) {
                 switch (function) {
                     case 1:
                         printf("\nA game save file already exists in that slot, do you want to overwrite it? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n" OPCANCEL); menuStop = 1; }
                         break;
                     case 2:
-                        puts("\nLoading save file");
+                        loadGame(option);
                         break;
                     default:
                         printf("\nAre you sure you want to delete the file? [y/n]: ");
+                        if (deleteConfirm()) { remove("savestates\\saveslot1.txt"); puts("The file has been deleted..."); }
+                        else puts(OPCANCEL);
+                        menuStop = 1;
                 }
             } else {
                 switch (function) {
@@ -252,10 +267,12 @@ void checkSelectedFile(int filesRead, int function) {
                         break;
                     case 2:
                         printf("\nThe save slot is empty, would you like to crete a new game instead? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n"OPCANCEL); menuStop = 1; }
                         break;
                     default:
                         puts("\nThe file that you're trying to select isn't created yet!");
+                        menuStop = 1;
                 }
             }
             break;
@@ -264,13 +281,17 @@ void checkSelectedFile(int filesRead, int function) {
                 switch (function) {
                     case 1:
                         printf("\nA game save file already exists in that slot, do you want to overwrite it? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n" OPCANCEL); menuStop = 1; }
                         break;
                     case 2:
-                        puts("\nLoading save file");
+                        loadGame(option);
                         break;
                     default:
                         printf("\nAre you sure you want to delete the file? [y/n]: ");
+                        if (deleteConfirm()) { remove("savestates\\saveslot2.txt"); puts("The file has been deleted..."); }
+                        else puts(OPCANCEL);
+                        menuStop = 1;
                 }
             } else {
                 switch (function) {
@@ -279,10 +300,12 @@ void checkSelectedFile(int filesRead, int function) {
                         break;
                     case 2:
                         printf("\nThe save slot is empty, would you like to crete a new game instead? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n"OPCANCEL); menuStop = 1; }
                         break;
                     default:
                         puts("\nThe file that you're trying to select isn't created yet!");
+                        menuStop = 1;
                 }
             }
             break;
@@ -291,13 +314,17 @@ void checkSelectedFile(int filesRead, int function) {
                 switch (function) {
                     case 1:
                         printf("\nA game save file already exists in that slot, do you want to overwrite it? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n"OPCANCEL); menuStop = 1; }
                         break;
                     case 2:
-                        puts("\nLoading save file");
+                        loadGame(option);
                         break;
                     default:
                         printf("\nAre you sure you want to delete the file? [y/n]: ");
+                        if (deleteConfirm()) { remove("savestates\\saveslot3.txt"); puts("The file has been deleted..."); }
+                        else puts(OPCANCEL);
+                        menuStop = 1;
                 }
             } else {
                 switch (function) {
@@ -306,15 +333,18 @@ void checkSelectedFile(int filesRead, int function) {
                         break;
                     case 2:
                         printf("\nThe save slot is empty, would you like to crete a new game instead? [y/n]: ");
-                        confirmNewGame() ? createNewGameFile(option) : puts("\nOperation Cancelled. Press any key to return no main menu...");
+                        if (confirmNewGame()) createNewGameFile(option);
+                        else { puts("\n"OPCANCEL); menuStop = 1; }
                         break;
                     default:
                         puts("\nThe file that you're trying to select isn't created yet!");
+                        menuStop = 1;
                 }
             }
     }
-    getch();
+    if (menuStop) getch();
 }
+
 
 /*
  * Checks the option selected, and returns 1 if user selected y or Y and 0 otherwise
@@ -327,6 +357,21 @@ int confirmNewGame() {
 
     return confirmation;
 }
+
+int deleteConfirm() {
+    int confirmation = 0;
+    int select = getch();
+
+    if (select == 'y' || select == 'Y') {
+        printf("\nOne last time, once deleted you won't be able to recover it, are you sure? [y/n]: ");
+        select = getch();
+        if (select == 'y' || select == 'Y') confirmation++;
+    }
+
+    puts(""); //Just placing a newline for the resultmessage
+    return confirmation;
+}
+
 
 /*
  * Creates a new file and runs the game
@@ -359,20 +404,45 @@ void createNewGameFile(int fileNumber) {
         case 1:
             file = fopen("savestates\\saveslot1.txt", "w");
             fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
-            puts("\nFile Created");
             break;
         case 2:
             file = fopen("savestates\\saveslot2.txt", "w");
             fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
-            puts("\nFile Created");
             break;
         default:
             file = fopen("savestates\\saveslot3.txt", "w");
             fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
-            puts("\nFile Created");
-            break;
     }
 
     fclose(file);
+    mainGame(p1);
+}
 
+
+/*
+ * Reads the data from the savefile and saves it into the playerInfo struct
+ * Then sends it to the mainGame function
+ */
+void loadGame(int fileNumber) {
+    playerInfo p1;
+
+    FILE *file;
+
+    //We open the selected file and extract the information
+    switch (fileNumber) {
+        case 1:
+            file = fopen("savestates\\saveslot1.txt", "r");
+            fscanf(file, "%[^&]&%d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP);
+            break;
+        case 2:
+            file = fopen("savestates\\saveslot2.txt", "r");
+            fscanf(file, "%[^&]&%d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP);
+            break;
+        default:
+            file = fopen("savestates\\saveslot3.txt", "r");
+            fscanf(file, "%[^&]&%d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP);
+    }
+
+    fclose(file);
+    mainGame(p1);
 }
