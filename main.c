@@ -163,7 +163,7 @@ int readAllFiles(int mode) {
     //We try to read from all 3 files
     FILE *file1 = fopen("savestates\\saveslot1.txt", "r");
     FILE *file2 = fopen("savestates\\saveslot2.txt", "r");
-    FILE *file3 = fopen("savestates\\saveslot2.txt", "r");
+    FILE *file3 = fopen("savestates\\saveslot3.txt", "r");
 
     /*
      * We check if the files exists and display the information at the same time we set up the value to return
@@ -212,7 +212,7 @@ void writeFileInfo(FILE* file, int fileNum) {
             printf("3.- ");
     }
     fscanf(file, "%[^&]&%d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP);
-    printf("%s\tlvl: %d\tzone: %d\n", p1.playerName, p1.playerLevel, p1.currentZone);
+    printf("%s\tLvl: %d\tZone: %d\n", p1.playerName, p1.playerLevel, p1.currentZone);
 }
 
 /*
@@ -339,6 +339,8 @@ void createNewGameFile(int fileNumber) {
     //We read the name of the character, only info we need to get from the user
     printf("Choose the name of your character (up to 10 characters): ");
     fgets(p1.playerName, 11, stdin);
+    p1.playerName[strcspn(p1.playerName, "\n")] = 0; //Takes the \n from the string
+    fflush(stdin); //We clear buffer just in case name was longer than 10 characters
 
     //We load up the rest of the type playerInfo with default options
     p1.playerLevel = 1;
