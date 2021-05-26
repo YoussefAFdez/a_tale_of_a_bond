@@ -26,10 +26,16 @@ void initialize() {
     if (dir) closedir(dir);
     else if (ENOENT == errno){ system("mkdir bosses"); closedir(dir); }
 
-    //Check if bosses folder exists
+    //Check if story folder exists
     dir = opendir("story");
     if (dir) closedir(dir);
     else if (ENOENT == errno){ system("mkdir story"); closedir(dir); }
+
+    //Check if player folder exists
+    dir = opendir("player");
+    if (dir) closedir(dir);
+    else if (ENOENT == errno){ system("mkdir player"); closedir(dir); }
+
 
     FILE *file;
 
@@ -59,7 +65,7 @@ void initialize() {
     if (file == NULL) {
         file = fopen(BOSSFOLDER, "w+b");
 
-        bossReg0.registerNumber = 0;
+        bossReg0.registerNumber = 3;
         memset(&b1, '*', sizeof(b1));
 
         fseek(file, 0, SEEK_SET);
@@ -69,7 +75,7 @@ void initialize() {
     }
     fclose(file);
 
-    //We initialize the bosses file if it doesn't exist
+    //We initialize the stories file if it doesn't exist
     file = fopen(STORYFOLDER, "r+b");
     story s1;
     storyHeader storyReg0;
@@ -77,13 +83,31 @@ void initialize() {
     if (file == NULL) {
         file = fopen(STORYFOLDER, "w+b");
 
-        storyReg0.registerNumber = 0;
+        storyReg0.registerNumber = 10;
         memset(&s1, '*', sizeof(s1));
 
         fseek(file, 0, SEEK_SET);
         fwrite(&s1, sizeof(s1), 1, file);
         fseek(file, 0, SEEK_SET);
         fwrite(&storyReg0, sizeof(storyReg0), 1, file);
+    }
+    fclose(file);
+
+    //We initialize the playerstats file if it doesn't exist
+    file = fopen(PLAYERSTATSFOLDER, "r+b");
+    playerStats ps1;
+    playerStatsHeader psReg0;
+
+    if (file == NULL) {
+        file = fopen(PLAYERSTATSFOLDER, "w+b");
+
+        psReg0.registerNumber = 10;
+        memset(&ps1, '*', sizeof(ps1));
+
+        fseek(file, 0, SEEK_SET);
+        fwrite(&ps1, sizeof(ps1), 1, file);
+        fseek(file, 0, SEEK_SET);
+        fwrite(&psReg0, sizeof(psReg0), 1, file);
     }
     fclose(file);
 
@@ -119,6 +143,9 @@ void mainSecretMenu() {
                 break;
             case 4:
                 break;
+            case 5:
+                editPlayerStats();
+                break;
             case 0:
                 exit = 1;
                 break;
@@ -137,6 +164,7 @@ int printSecretMenu() {
     puts("2.- Manage Bosses");
     puts("3.- Manage Story");
     puts("4.- Manage Lore");
+    puts("5.- Edit Player Stats");
     puts("0.- Go back to main menu");
     return getch() - '0';
 }
@@ -577,10 +605,76 @@ void editStory() {
         fclose(file);
 
         puts("The segment has been modified");
-    } else ("You haven't chosen an appropiate segment");
+    } else puts("You haven't chosen an appropiate segment");
 
     getch();
 
+}
+
+void editPlayerStats() {
+    system("cls");
+    puts("PLAYER STATS\n");
+    puts("1.-  Level 1 player stats");
+    puts("2.-  Level 2 player stats");
+    puts("3.-  Level 3 player stats");
+    puts("4.-  Level 4 player stats");
+    puts("5.-  Level 5 player stats");
+    puts("6.-  Level 6 player stats");
+    puts("7.-  Level 7 player stats");
+    puts("8.-  Level 8 player stats");
+    puts("9.-  Level 9 player stats");
+    puts("10.- Level 10 player stats\n");
+    puts("0.-  Cancel\n");
+
+    printf("Select an option: ");
+
+    int selection;
+    scanf("%d", &selection);
+
+    if (!selection) puts("\nOperation cancelled");
+    else if (selection >= 1 && selection <= 10) {
+        FILE *file = fopen(PLAYERSTATSFOLDER, "r+b");
+        playerStats ps1;
+        playerStatsHeader reg0;
+
+        fseek(file, 0 , SEEK_SET);
+        fread(&reg0, sizeof(reg0), 1, file);
+
+        int position = selection * sizeof(ps1);
+        fseek(file, position, SEEK_SET);
+        fread(&ps1, sizeof(ps1), 1, file);
+
+        //We print the current values for that level
+        system("cls");
+        puts("Current values for the level selected:\n");
+        printf("HP: %d\t", ps1.HP);
+        printf("ATK: %d\t", ps1.ATK);
+        printf("DEF: %d\t", ps1.DEF);
+        printf("crit: %d\t", ps1.crit);
+        printf("EXP: %d\n\n", ps1.expNecessary);
+
+        printf("Set the new HP value for level %d: ", selection);
+        scanf("%d", &ps1.HP);
+        printf("Set the new ATK value for level %d: ", selection);
+        scanf("%d", &ps1.ATK);
+        printf("Set the new DEF value for level %d: ", selection);
+        scanf("%d", &ps1.DEF);
+        printf("Set the new crit value for level %d: ", selection);
+        scanf("%d", &ps1.crit);
+        printf("Set the new EXP/NECESSARY value for level %d: ", selection);
+        scanf("%d", &ps1.expNecessary);
+
+        fseek(file, position, SEEK_SET);
+        fwrite(&ps1, sizeof(ps1), 1, file);
+
+        fclose(file);
+
+        puts("\nThe level has been modified");
+
+    } else puts("\nInvalid input");
+
+    fflush(stdin);
+    getch();
 }
 
 

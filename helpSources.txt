@@ -13,3 +13,8 @@ https://www.tutorialspoint.com/c-program-to-delete-a-file
 Read all characters from a file:
 https://www.codevscolor.com/c-program-read-file-contents-character
 
+Generate random number:
+https://stackoverflow.com/questions/822323/how-to-generate-a-random-int-in-c
+
+
+

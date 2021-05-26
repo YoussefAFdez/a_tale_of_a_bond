@@ -1,0 +1,4 @@
+C:\Users\Yuu\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\211.7142.21\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\Yuu\Desktop\a_tale_of_a_bond
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/Yuu/Desktop/a_tale_of_a_bond/cmake-build-debug

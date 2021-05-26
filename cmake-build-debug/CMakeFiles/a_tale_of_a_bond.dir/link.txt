@@ -1,0 +1,3 @@
+C:\Users\Yuu\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\211.7142.21\bin\cmake\win\bin\cmake.exe -E rm -f CMakeFiles\a_tale_of_a_bond.dir/objects.a
+C:\PROGRA~1\CODEBL~1\MinGW\bin\ar.exe cr CMakeFiles\a_tale_of_a_bond.dir/objects.a @CMakeFiles\a_tale_of_a_bond.dir\objects1.rsp
+C:\PROGRA~1\CODEBL~1\MinGW\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\a_tale_of_a_bond.dir/objects.a -Wl,--no-whole-archive -o a_tale_of_a_bond.exe -Wl,--out-implib,liba_tale_of_a_bond.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\a_tale_of_a_bond.dir\linklibs.rsp

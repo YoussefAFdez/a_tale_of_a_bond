@@ -411,7 +411,7 @@ void createNewGameFile(int fileNumber) {
     }
 
     fclose(file);
-    mainGame(p1);
+    mainGame(p1, fileNumber);
 }
 
 
@@ -441,5 +441,5 @@ void loadGame(int fileNumber) {
     }
 
     fclose(file);
-    mainGame(p1);
+    mainGame(p1, fileNumber);
 }

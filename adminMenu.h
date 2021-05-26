@@ -11,6 +11,7 @@
 #define MONSTERFOLDER "monsters\\monsters.dat"
 #define BOSSFOLDER "bosses\\bosses.dat"
 #define STORYFOLDER "story\\story.dat"
+#define PLAYERSTATSFOLDER "player\\playerstats.dat"
 
 typedef struct {
     char name[26];
@@ -57,6 +58,18 @@ typedef struct {
     int registerNumber;
 } storyHeader;
 
+typedef struct {
+    int HP;
+    int ATK;
+    int DEF;
+    int crit;
+    int expNecessary;
+} playerStats;
+
+typedef struct {
+    int registerNumber;
+} playerStatsHeader;
+
 int printSecretMenu();
 void mainSecretMenu();
 int printMonstersMenu();
@@ -68,5 +81,6 @@ int printEditMonsterOptions(char[]);
 void printMonsterInfo(int);
 void editBoss();
 void editStory();
+void editPlayerStats();
 
 #endif //A_TALE_OF_A_BOND_ADMINMENU_H

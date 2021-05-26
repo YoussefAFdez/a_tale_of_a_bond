@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Yuu/Desktop/a_tale_of_a_bond/adminMenu.h
+stdio.h
+-
+stdlib.h
+-
+conio.h
+-
+
+C:/Users/Yuu/Desktop/a_tale_of_a_bond/game.c
+game.h
+C:/Users/Yuu/Desktop/a_tale_of_a_bond/game.h
+
+C:/Users/Yuu/Desktop/a_tale_of_a_bond/game.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+conio.h
+-
+adminMenu.h
+C:/Users/Yuu/Desktop/a_tale_of_a_bond/adminMenu.h
+time.h
+-
+
