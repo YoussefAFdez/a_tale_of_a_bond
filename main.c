@@ -13,7 +13,6 @@ int printContinueGameMenu();
 int printManageGameFilesMenu();
 void printLoreMenu();
 void printCredits();
-void printSecretAdministrationMenu();
 int readAllFiles(int);
 void writeFileInfo(FILE*, int);
 void checkSelectedFile(int, int);
@@ -23,6 +22,7 @@ void createNewGameFile(int);
 void loadGame(int);
 
 int main() {
+    initialize();
     int exitRequest = 0;
     while (1) {
         system("cls");
@@ -50,10 +50,13 @@ int main() {
             case 6:
                 tutorial();
                 break;
+            case 7: //Just a quick way to return to the menu after using the secret admin menu
+                break;
             case 0:
                 exit(0);
             default:
                 puts("\nInvalid Option");
+                getch();
                 break;
         }
     }
@@ -78,12 +81,12 @@ int printMainMenu() {
             option = getch();
             if (option == 'v') {
                 option = getch();
-                if (option == 'a') printSecretAdministrationMenu();
+                if (option == 'a') mainSecretMenu();
             }
         }
     } else return 'a';
 
-    return 0;
+    return 7;
 }
 
 int printNewGameMenu() {
@@ -140,13 +143,6 @@ void printCredits() {
     getch();
 }
 
-//Allows further access to gameFiles
-void printSecretAdministrationMenu() {
-    system("cls");
-    puts("You're on the super secret menu");
-    getch();
-}
-
 int readAllFiles(int mode) {
 
     int returnvalue = 0;
@@ -162,8 +158,7 @@ int readAllFiles(int mode) {
      */
 
     /*
-     * First we need to check if the savestates folder exists
-     * If it doesn't it's because it's the first time launching the program, so we should create it
+     * We check if the savestates folder exists
      */
     DIR* dir = opendir("savestates");
     if (dir) closedir(dir);
@@ -221,7 +216,7 @@ void writeFileInfo(FILE* file, int fileNum) {
         default:
             printf("3.- ");
     }
-    fscanf(file, "%[^&]&%d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP);
+    fscanf(file, "%[^&]&%d & %d & %d & %d & %d", p1.playerName, &p1.playerLevel, &p1.currentZone, &p1.currentEXP, &p1.currentHP, &p1.monsterCount);
     printf("%s\tLvl: %d\tZone: %d\n", p1.playerName, p1.playerLevel, p1.currentZone);
 }
 
@@ -392,6 +387,7 @@ void createNewGameFile(int fileNumber) {
     p1.currentZone = 0;
     p1.currentEXP = 0;
     p1.currentHP = 100;
+    p1.monsterCount = 0;
 
     /*
      * We create the new file, it doesn't matter if it existed cause we're overriding it if it were
@@ -403,20 +399,21 @@ void createNewGameFile(int fileNumber) {
     switch (fileNumber) {
         case 1:
             file = fopen("savestates\\saveslot1.txt", "w");
-            fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
+            fprintf(file, "%s& %d & %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP, p1.monsterCount);
             break;
         case 2:
             file = fopen("savestates\\saveslot2.txt", "w");
-            fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
+            fprintf(file, "%s& %d & %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP, p1.monsterCount);
             break;
         default:
             file = fopen("savestates\\saveslot3.txt", "w");
-            fprintf(file, "%s& %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP);
+            fprintf(file, "%s& %d & %d & %d & %d & %d", p1.playerName, p1.playerLevel, p1.currentZone, p1.currentEXP, p1.currentHP, p1.monsterCount);
     }
 
     fclose(file);
     mainGame(p1);
 }
+
 
 
 /*

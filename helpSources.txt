@@ -10,3 +10,6 @@ https://stackoverflow.com/questions/1431576/how-do-you-declare-string-constants-
 Delete file:
 https://www.tutorialspoint.com/c-program-to-delete-a-file
 
+Read all characters from a file:
+https://www.codevscolor.com/c-program-read-file-contents-character
+
